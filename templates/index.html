@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QRGen | สร้าง QR Code สวยๆ ในคลิกเดียว</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          },
+          fontFamily: {
+            'prompt': ['Prompt', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 font-prompt">
+  <div class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+    <!-- Header Section -->
+    <header class="text-center mb-10">
+      <div class="inline-flex items-center justify-center bg-white p-3 rounded-full shadow-lg mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+        </svg>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight mb-3">สร้าง QR Code </h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">แปลงลิงก์ของคุณเป็น QR Code สวยงาม พร้อมใส่โลโก้และเลือกรูปแบบได้ตามใจชอบ</p>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-8 animate-fade-in">
+          {% for m in messages %}
+            <div class="rounded-xl px-5 py-3 bg-white border border-primary-200 shadow-sm flex items-start max-w-2xl mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 mt-0.5 text-primary-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">{{ m }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Form Section -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+            </svg>
+            ตั้งค่า QR Code
+          </h2>
+          <span class="text-xs bg-primary-100 text-primary-800 px-2 py-1 rounded-full">เวอร์ชัน 1.0</span>
+        </div>
+        
+        <form method="post" action="{{ url_for('index') }}" enctype="multipart/form-data" class="space-y-6">
+          <!-- URL Input -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">ลิงก์ที่ต้องการแปลง</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="text" name="url" placeholder="https://example.com"
+                     class="pl-10 input w-full" required value="{{ data if data else '' }}"
+                     aria-label="URL ที่ต้องการแปลงเป็น QR Code">
+            </div>
+          </div>
+
+          <!-- Color Settings -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">สี QR Code</label>
+              <div class="flex items-center space-x-3">
+                <input type="color" name="color" value="{{ color or '#000000' }}" 
+                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm"
+                       aria-label="เลือกสีสำหรับ QR Code">
+                <input type="text" name="color_text" value="{{ color or '#000000' }}" 
+                       class="input flex-grow" placeholder="#000000" 
+                       onchange="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">สีพื้นหลัง</label>
+              <div class="flex items-center space-x-3">
+                <input type="color" name="bg" value="{{ bg or '#ffffff' }}" 
+                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm"
+                       aria-label="เลือกสีพื้นหลัง">
+                <input type="text" name="bg_text" value="{{ bg or '#ffffff' }}" 
+                       class="input flex-grow" placeholder="#ffffff" 
+                       onchange="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+          </div>
+
+          <!-- QR Style Selection -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-3">เลือกรูปแบบ</label>
+            <div class="grid grid-cols-3 gap-3">
+              <!-- Square Style -->
+              <div>
+                <input type="radio" name="qr_style" id="style-square" value="square" class="hidden peer" 
+                       {% if qr_style == 'square' or not qr_style %}checked{% endif %}>
+                <label for="style-square" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                  <div class="w-12 h-12 bg-black mb-2"></div>
+                  <span class="text-sm font-medium">สี่เหลี่ยม</span>
+                </label>
+              </div>
+              
+              <!-- Dot Style -->
+              <div>
+                <input type="radio" name="qr_style" id="style-dot" value="dot" class="hidden peer" 
+                       {% if qr_style == 'dot' %}checked{% endif %}>
+                <label for="style-dot" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                  <div class="w-12 h-12 bg-black rounded-full mb-2"></div>
+                  <span class="text-sm font-medium">จุดกลม</span>
+                </label>
+              </div>
+              
+              <!-- Rounded Style -->
+              <div>
+                <input type="radio" name="qr_style" id="style-rounded" value="rounded" class="hidden peer" 
+                       {% if qr_style == 'rounded' %}checked{% endif %}>
+                <label for="style-rounded" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                  <div class="w-12 h-12 bg-black rounded-lg mb-2"></div>
+                  <span class="text-sm font-medium">มุมโค้ง</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo Upload -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">โลโก้ (ไม่บังคับ)</label>
+            <div class="flex items-center space-x-3">
+              <label class="cursor-pointer flex-1">
+                <input type="file" name="logo" id="logo-upload" class="hidden" accept="image/*">
+                <div class="btn-outline w-full flex items-center justify-center py-2.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                  </svg>
+                  เลือกไฟล์โลโก้
+                </div>
+              </label>
+              <span id="logo-filename" class="text-sm text-gray-500 truncate flex-1">ยังไม่ได้เลือกไฟล์</span>
+            </div>
+            <div id="logo-preview" class="mt-3 hidden">
+              <div class="text-xs text-gray-500 mb-1">ตัวอย่างโลโก้:</div>
+              <img id="logo-preview-image" class="h-24 w-24 object-contain border-2 border-dashed border-gray-200 rounded-lg mx-auto">
+            </div>
+          </div>
+
+          <!-- Size Settings -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="size" class="block text-sm font-medium text-gray-700 mb-2">ขนาดจุด (พิกเซล)</label>
+              <input type="number" id="size" name="size" min="4" max="20" value="{{ size or 10 }}" 
+                     class="input" aria-label="ขนาดจุด QR Code">
+            </div>
+            <div>
+              <label for="border" class="block text-sm font-medium text-gray-700 mb-2">ขอบ (ช่อง)</label>
+              <input type="number" id="border" name="border" min="0" max="8" value="{{ border or 2 }}" 
+                     class="input" aria-label="ขนาดขอบ QR Code">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-primary w-full mt-2 py-3 flex items-center justify-center rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 006 0v-5a1 1 0 011-1h2a1 1 0 011 1v5a3 3 0 006 0V4a2 2 0 00-2-2H4zm3 16a1 1 0 100-2 1 1 0 000 2zm5-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
+            </svg>
+            สร้าง QR Code ของฉัน
+          </button>
+          
+          <!-- Tips -->
+          <div class="bg-primary-50 rounded-xl p-4 text-sm text-primary-800 border border-primary-100">
+            <div class="flex">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+              </svg>
+              <span>ขนาดไฟล์โลโก้แนะนำไม่เกิน 50KB และควรเป็นไฟล์ PNG พื้นหลังโปร่งใสเพื่อผลลัพธ์ที่ดีที่สุด</span>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+            </svg>
+            ตัวอย่าง QR Code
+          </h2>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">พรีวิว</span>
+        </div>
+        
+        {% if preview_url %}
+          <div class="flex-grow flex flex-col items-center justify-center">
+            <div class="p-5 bg-white rounded-xl border-2 border-gray-100 shadow-inner mb-6">
+              <img class="rounded-lg w-64 h-64 object-contain" src="{{ preview_url }}" alt="QR Code Preview" id="qr-preview-image">
+            </div>
+            
+            <div class="w-full space-y-4">
+              <!-- Download and Copy Buttons -->
+              <div class="grid grid-cols-2 gap-3">
+                <a class="btn-primary flex items-center justify-center py-2.5 rounded-lg" href="{{ download_url }}" download="my_qrcode.png">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                  ดาวน์โหลด
+                </a>
+                <button class="btn-outline flex items-center justify-center py-2.5 rounded-lg" onclick="navigator.clipboard.writeText('{{ data|e }}'); this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2 text-green-500\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path fill-rule=\'evenodd\' d=\'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\' clip-rule=\'evenodd\' /></svg>คัดลอกแล้ว!'; setTimeout(()=>this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path d=\'M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z\' /><path d=\'M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z\' /></svg>คัดลอก URL',1500)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                  </svg>
+                  คัดลอก URL
+                </button>
+              </div>
+              
+              <!-- URL Info -->
+              <div class="bg-gray-50 rounded-xl p-4 text-sm border border-gray-200">
+                <div class="font-medium text-gray-700 mb-1 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                  </svg>
+                  ลิงก์ปลายทาง:
+                </div>
+                <div class="text-gray-600 break-all bg-white p-2 rounded-lg mt-1">{{ data }}</div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <!-- Empty State -->
+          <div class="flex-grow flex flex-col items-center justify-center text-center p-8">
+            <div class="bg-gray-100 rounded-full p-5 mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-600 mb-2">ยังไม่มี QR Code</h3>
+            <p class="text-gray-500 max-w-xs">กรุณากรอก URL และกดปุ่ม "สร้าง QR Code ของฉัน" เพื่อดูตัวอย่าง</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center">
+      <div class="inline-flex flex-col items-center space-y-3">
+        <!-- Support Button -->
+        <a href="{{ url_for('support') }}" class="inline-flex items-center px-5 py-2.5 rounded-full bg-white border border-primary-200 text-primary-700 hover:bg-primary-50 shadow-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+          </svg>
+          สนับสนุนการพัฒนา
+        </a>
+        
+        <!-- Credit -->
+        <div class="text-sm text-gray-500 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          สร้างด้วยความรักโดย น้องโย
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Animation for better UX
+    document.addEventListener('DOMContentLoaded', () => {
+      // Focus styles for inputs
+      const inputs = document.querySelectorAll('input:not([type="radio"]), textarea, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+          input.parentElement.classList.add('ring-2', 'ring-primary-200', 'rounded-lg');
+        });
+        input.addEventListener('blur', () => {
+          input.parentElement.classList.remove('ring-2', 'ring-primary-200', 'rounded-lg');
+        });
+      });
+
+      // Logo upload preview
+      const logoUpload = document.getElementById('logo-upload');
+      if (logoUpload) {
+        logoUpload.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            document.getElementById('logo-filename').textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              const preview = document.getElementById('logo-preview-image');
+              preview.src = event.target.result;
+              document.getElementById('logo-preview').classList.remove('hidden');
+              
+              // Update QR code preview if exists
+              const qrPreview = document.getElementById('qr-preview-image');
+              if (qrPreview) {
+                qrPreview.classList.add('animate-pulse');
+                setTimeout(() => qrPreview.classList.remove('animate-pulse'), 1000);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Set initial active QR style
+      const qrStyle = "{{ qr_style or 'square' }}";
+      document.getElementById(`style-${qrStyle}`).checked = true;
+    });
+
+    // QR code animation when generated
+    {% if preview_url %}
+      document.addEventListener('DOMContentLoaded', () => {
+        const qrPreview = document.getElementById('qr-preview-image');
+        if (qrPreview) {
+          qrPreview.classList.add('animate-bounce');
+          setTimeout(() => qrPreview.classList.remove('animate-bounce'), 1000);
+        }
+      });
+    {% endif %}
+  </script>
+</body>
+</html>

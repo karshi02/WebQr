@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>สนับสนุนเว็ปไซต์ของเรา</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%); }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg">
+
+      {% if support_qr_url %}
+      <!-- <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">สแกนเพื่อสนับสนุน</h2>
+        <div class="p-4 bg-white rounded-lg border border-gray-200 inline-block">
+          <img src="{{ support_qr_url }}" alt="Support QR" class="w-56 h-56 object-contain rounded">
+        </div>
+        <p class="text-sm text-gray-500 mt-2"></p>
+      </div>
+      {% endif %} -->
+
+      <div class="pt-4">
+        <a href="{{ url_for('index') }}" class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50">
+          ← กลับไปสร้าง QR
+        </a>
+      </div>
+    </div>
+
+    <footer class="text-center mt-12 text-sm text-gray-500">
+      <!-- ขอบคุณที่สนับสนุน—แรงใจมาเต็ม ระบบก็วิ่งแรงขึ้น 😎 -->
+    </footer>
+  </div>
+</body>
+</html>
+<div class="text-center mt-4">
+  <a href="{{ url_for('support') }}" class="inline-flex items-center px-4 py-2 text-sm rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50">
+    สนับสนุนเว็ปไซต์ของเรา
+  </a>
+</div>
+<div class="text-center mt-4">
+  <a href="{{ url_for('index') }}" class="inline-flex items-center px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+    กลับไปสร้าง QR
+  </a>
