@@ -30,7 +30,6 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
@@ -38,8 +37,236 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
   <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+  
+  <!-- CSS สำหรับ Responsive -->
+  <style>
+    /* CSS สำหรับ Responsive Design */
+    @media (max-width: 640px) {
+      .mobile-stack {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .mobile-full {
+        width: 100%;
+      }
+      
+      .mobile-padding {
+        padding: 1rem;
+      }
+      
+      .mobile-text-center {
+        text-align: center;
+      }
+      
+      .mobile-mb-4 {
+        margin-bottom: 1rem;
+      }
+      
+      .mobile-grid-1 {
+        grid-template-columns: 1fr;
+      }
+      
+      .mobile-hide {
+        display: none;
+      }
+      
+      .mobile-show {
+        display: block;
+      }
+      
+      .mobile-logo-preview {
+        max-width: 80px;
+        max-height: 80px;
+      }
+      
+      .mobile-qr-preview {
+        max-width: 200px;
+        max-height: 200px;
+      }
+    }
+    
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .tablet-grid-1 {
+        grid-template-columns: 1fr;
+      }
+      
+      .tablet-padding {
+        padding: 1.5rem;
+      }
+    }
+    
+    /* CSS สำหรับปุ่มและอินพุต */
+    .input {
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: #0ea5e9;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0284c7;
+    }
+    
+    .btn-outline {
+      background-color: white;
+      color: #374151;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid #d1d5db;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-outline:hover {
+      background-color: #f9fafb;
+      border-color: #9ca3af;
+    }
+    
+    /* Animation สำหรับ Responsive */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    /* ปรับปรุงการแสดงผลบนมือถือ */
+    .mobile-menu-button {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .mobile-menu-button {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        background: white;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+      }
+      
+      .mobile-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: white;
+        z-index: 40;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        padding: 5rem 1.5rem 2rem;
+        overflow-y: auto;
+      }
+      
+      .mobile-nav.active {
+        right: 0;
+      }
+      
+      .mobile-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 30;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      .mobile-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 font-prompt">
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="เปิดเมนู">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+  
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" id="mobileNav">
+    <div class="space-y-6">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center bg-primary-100 p-3 rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-800">QRGen</h2>
+        <p class="text-sm text-gray-600 mt-1">สร้าง QR Code สวยๆ ในคลิกเดียว</p>
+      </div>
+      
+      <a href="#form-section" class="block py-3 px-4 bg-primary-50 text-primary-700 rounded-lg font-medium flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+        </svg>
+        สร้าง QR Code
+      </a>
+      
+      <a href="{{ url_for('support') }}" class="block py-3 px-4 text-gray-700 rounded-lg font-medium flex items-center hover:bg-gray-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+        </svg>
+        สนับสนุน
+      </a>
+      
+      <div class="pt-6 border-t border-gray-200">
+        <div class="text-center text-sm text-gray-500">
+          สร้างด้วยความรักโดย น้องโย
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="max-w-6xl mx-auto px-4 py-8 md:py-12">
     <!-- Header Section -->
     <header class="text-center mb-10">
@@ -69,9 +296,9 @@
     {% endwith %}
 
     <!-- Main Content -->
-    <div class="grid md:grid-cols-2 gap-8">
+    <div class="grid md:grid-cols-2 gap-8 tablet-grid-1 mobile-grid-1">
       <!-- Form Section -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 tablet-padding mobile-padding" id="form-section">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-semibold text-gray-800 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
@@ -93,32 +320,32 @@
                 </svg>
               </div>
               <input type="text" name="url" placeholder="https://example.com"
-                     class="pl-10 input w-full" required value="{{ data if data else '' }}"
+                     class="pl-10 input w-full mobile-full" required value="{{ data if data else '' }}"
                      aria-label="URL ที่ต้องการแปลงเป็น QR Code">
             </div>
           </div>
 
           <!-- Color Settings -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
+          <div class="grid grid-cols-2 gap-4 mobile-stack">
+            <div class="mobile-full mobile-mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">สี QR Code</label>
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-3 mobile-stack">
                 <input type="color" name="color" value="{{ color or '#000000' }}" 
-                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm"
+                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm mobile-full mobile-mb-2"
                        aria-label="เลือกสีสำหรับ QR Code">
                 <input type="text" name="color_text" value="{{ color or '#000000' }}" 
-                       class="input flex-grow" placeholder="#000000" 
+                       class="input flex-grow mobile-full" placeholder="#000000" 
                        onchange="this.previousElementSibling.value=this.value">
               </div>
             </div>
-            <div>
+            <div class="mobile-full">
               <label class="block text-sm font-medium text-gray-700 mb-2">สีพื้นหลัง</label>
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-3 mobile-stack">
                 <input type="color" name="bg" value="{{ bg or '#ffffff' }}" 
-                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm"
+                       class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 shadow-sm mobile-full mobile-mb-2"
                        aria-label="เลือกสีพื้นหลัง">
                 <input type="text" name="bg_text" value="{{ bg or '#ffffff' }}" 
-                       class="input flex-grow" placeholder="#ffffff" 
+                       class="input flex-grow mobile-full" placeholder="#ffffff" 
                        onchange="this.previousElementSibling.value=this.value">
               </div>
             </div>
@@ -127,12 +354,12 @@
           <!-- QR Style Selection -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-3">เลือกรูปแบบ</label>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-3 gap-3 mobile-grid-1">
               <!-- Square Style -->
               <div>
                 <input type="radio" name="qr_style" id="style-square" value="square" class="hidden peer" 
                        {% if qr_style == 'square' or not qr_style %}checked{% endif %}>
-                <label for="style-square" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                <label for="style-square" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors mobile-full">
                   <div class="w-12 h-12 bg-black mb-2"></div>
                   <span class="text-sm font-medium">สี่เหลี่ยม</span>
                 </label>
@@ -142,7 +369,7 @@
               <div>
                 <input type="radio" name="qr_style" id="style-dot" value="dot" class="hidden peer" 
                        {% if qr_style == 'dot' %}checked{% endif %}>
-                <label for="style-dot" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                <label for="style-dot" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors mobile-full">
                   <div class="w-12 h-12 bg-black rounded-full mb-2"></div>
                   <span class="text-sm font-medium">จุดกลม</span>
                 </label>
@@ -152,7 +379,7 @@
               <div>
                 <input type="radio" name="qr_style" id="style-rounded" value="rounded" class="hidden peer" 
                        {% if qr_style == 'rounded' %}checked{% endif %}>
-                <label for="style-rounded" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors">
+                <label for="style-rounded" class="flex flex-col items-center p-3 border-2 border-gray-200 rounded-xl cursor-pointer peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition-colors mobile-full">
                   <div class="w-12 h-12 bg-black rounded-lg mb-2"></div>
                   <span class="text-sm font-medium">มุมโค้ง</span>
                 </label>
@@ -163,40 +390,40 @@
           <!-- Logo Upload -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">โลโก้ (ไม่บังคับ)</label>
-            <div class="flex items-center space-x-3">
-              <label class="cursor-pointer flex-1">
+            <div class="flex items-center space-x-3 mobile-stack">
+              <label class="cursor-pointer flex-1 mobile-full mobile-mb-2">
                 <input type="file" name="logo" id="logo-upload" class="hidden" accept="image/*">
-                <div class="btn-outline w-full flex items-center justify-center py-2.5">
+                <div class="btn-outline w-full flex items-center justify-center py-2.5 mobile-full">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
                   </svg>
                   เลือกไฟล์โลโก้
                 </div>
               </label>
-              <span id="logo-filename" class="text-sm text-gray-500 truncate flex-1">ยังไม่ได้เลือกไฟล์</span>
+              <span id="logo-filename" class="text-sm text-gray-500 truncate flex-1 mobile-full mobile-text-center">ยังไม่ได้เลือกไฟล์</span>
             </div>
             <div id="logo-preview" class="mt-3 hidden">
-              <div class="text-xs text-gray-500 mb-1">ตัวอย่างโลโก้:</div>
-              <img id="logo-preview-image" class="h-24 w-24 object-contain border-2 border-dashed border-gray-200 rounded-lg mx-auto">
+              <div class="text-xs text-gray-500 mb-1 mobile-text-center">ตัวอย่างโลโก้:</div>
+              <img id="logo-preview-image" class="h-24 w-24 object-contain border-2 border-dashed border-gray-200 rounded-lg mx-auto mobile-logo-preview">
             </div>
           </div>
 
           <!-- Size Settings -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
+          <div class="grid grid-cols-2 gap-4 mobile-stack">
+            <div class="mobile-full mobile-mb-4">
               <label for="size" class="block text-sm font-medium text-gray-700 mb-2">ขนาดจุด (พิกเซล)</label>
               <input type="number" id="size" name="size" min="4" max="20" value="{{ size or 10 }}" 
-                     class="input" aria-label="ขนาดจุด QR Code">
+                     class="input mobile-full" aria-label="ขนาดจุด QR Code">
             </div>
-            <div>
+            <div class="mobile-full">
               <label for="border" class="block text-sm font-medium text-gray-700 mb-2">ขอบ (ช่อง)</label>
               <input type="number" id="border" name="border" min="0" max="8" value="{{ border or 2 }}" 
-                     class="input" aria-label="ขนาดขอบ QR Code">
+                     class="input mobile-full" aria-label="ขนาดขอบ QR Code">
             </div>
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-primary w-full mt-2 py-3 flex items-center justify-center rounded-lg">
+          <button type="submit" class="btn-primary w-full mt-2 py-3 flex items-center justify-center rounded-lg mobile-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 006 0v-5a1 1 0 011-1h2a1 1 0 011 1v5a3 3 0 006 0V4a2 2 0 00-2-2H4zm3 16a1 1 0 100-2 1 1 0 000 2zm5-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
             </svg>
@@ -205,7 +432,7 @@
           
           <!-- Tips -->
           <div class="bg-primary-50 rounded-xl p-4 text-sm text-primary-800 border border-primary-100">
-            <div class="flex">
+            <div class="flex mobile-stack">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
               </svg>
@@ -216,7 +443,7 @@
       </div>
 
       <!-- Preview Section -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 flex flex-col">
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 flex flex-col tablet-padding mobile-padding">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-semibold text-gray-800 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
@@ -230,19 +457,19 @@
         {% if preview_url %}
           <div class="flex-grow flex flex-col items-center justify-center">
             <div class="p-5 bg-white rounded-xl border-2 border-gray-100 shadow-inner mb-6">
-              <img class="rounded-lg w-64 h-64 object-contain" src="{{ preview_url }}" alt="QR Code Preview" id="qr-preview-image">
+              <img class="rounded-lg w-64 h-64 object-contain mobile-qr-preview" src="{{ preview_url }}" alt="QR Code Preview" id="qr-preview-image">
             </div>
             
             <div class="w-full space-y-4">
               <!-- Download and Copy Buttons -->
-              <div class="grid grid-cols-2 gap-3">
-                <a class="btn-primary flex items-center justify-center py-2.5 rounded-lg" href="{{ download_url }}" download="my_qrcode.png">
+              <div class="grid grid-cols-2 gap-3 mobile-stack">
+                <a class="btn-primary flex items-center justify-center py-2.5 rounded-lg mobile-full mobile-mb-2" href="{{ download_url }}" download="my_qrcode.png">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
                   ดาวน์โหลด
                 </a>
-                <button class="btn-outline flex items-center justify-center py-2.5 rounded-lg" onclick="navigator.clipboard.writeText('{{ data|e }}'); this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2 text-green-500\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path fill-rule=\'evenodd\' d=\'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\' clip-rule=\'evenodd\' /></svg>คัดลอกแล้ว!'; setTimeout(()=>this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path d=\'M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z\' /><path d=\'M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z\' /></svg>คัดลอก URL',1500)">
+                <button class="btn-outline flex items-center justify-center py-2.5 rounded-lg mobile-full" onclick="navigator.clipboard.writeText('{{ data|e }}'); this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2 text-green-500\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path fill-rule=\'evenodd\' d=\'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\' clip-rule=\'evenodd\' /></svg>คัดลอกแล้ว!'; setTimeout(()=>this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 mr-2\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path d=\'M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z\' /><path d=\'M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z\' /></svg>คัดลอก URL',1500)">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
                     <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
@@ -354,6 +581,68 @@
         }
       });
     {% endif %}
+
+    // Mobile menu functionality
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    
+    if (mobileMenuButton && mobileNav && mobileOverlay) {
+      mobileMenuButton.addEventListener('click', () => {
+        mobileNav.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+        document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+      });
+      
+      mobileOverlay.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      // Close menu when clicking on a link
+      const navLinks = mobileNav.querySelectorAll('a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.classList.remove('active');
+          mobileOverlay.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+    
+    // ปรับปรุงการแสดงผลบนมือถือ
+    function adjustForMobile() {
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        // ปรับขนาดฟอนต์สำหรับมือถือ
+        document.querySelectorAll('h1').forEach(el => {
+          if (el.textContent.includes('สร้าง QR Code')) {
+            el.classList.add('text-2xl');
+          }
+        });
+        
+        // ปรับ padding สำหรับมือถือ
+        document.querySelectorAll('.mobile-padding').forEach(el => {
+          el.classList.add('px-4', 'py-4');
+        });
+      }
+    }
+    
+    // เรียกฟังก์ชันเมื่อโหลดหน้าและเมื่อปรับขนาดหน้าต่าง
+    window.addEventListener('load', adjustForMobile);
+    window.addEventListener('resize', adjustForMobile);
+    
+    // ป้องกันการซูมเมื่อดับเบิลคลิกบนมือถือ
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
